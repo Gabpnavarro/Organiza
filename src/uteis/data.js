@@ -7,4 +7,12 @@ const dataTratada = (data) => {
     return date;
 }
 
-module.exports = {dataTratada};
+const dataTratadaArray = (array) => {
+    for(let objeto of array){
+        objeto.data = dataTratada(objeto.data);
+    }
+
+    return array;
+}
+
+module.exports = {dataTratada,dataTratadaArray};
