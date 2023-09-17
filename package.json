@@ -4,7 +4,8 @@
   "description": "API",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon ./src/index.js"
+    "dev": "nodemon ./src/index.js",
+    "start": "node ./src/index.js"
   },
   "author": "Gabriel Pereira Navarro",
   "license": "ISC",
@@ -13,6 +14,7 @@
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.29.4",
