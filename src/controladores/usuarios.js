@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const pool = require("../conexao");
 const jwt = require("jsonwebtoken");
-const senhaJwt = require("../senhaJwt");
+require('dotenv').config();
 
 const cadastrarUsuario = async (req,res) => {
     const {nome, email, senha} = req.body;
@@ -48,8 +48,8 @@ const login = async (req, res) => {
         .status(401)
         .json({ mensagem: "Usuário e/ou senha inválido(s)." });
     }
-
-    const token = jwt.sign({ id: usuario.id }, senhaJwt);
+    
+    const token = jwt.sign({ id: usuario.id }, process.env.JWT_PASS);
 
     return res.json({
       usuario,

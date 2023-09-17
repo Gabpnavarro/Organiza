@@ -1,1 +1,0 @@
-module.exports = "joffre2023";
