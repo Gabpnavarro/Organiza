@@ -1,5 +1,3 @@
-create database organiza;
-
 create table perfil (
 	id serial primary key,
 	nome text 

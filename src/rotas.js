@@ -4,12 +4,7 @@ const verificaLogin = require('./intermediarios/verificarLogin');
 const { validarDados, validarEmailExistente, validarTransacao } = require('./intermediarios/validacoes');
 const { cadastrarTransacao, listarFinanceiro } = require('./controladores/financeiro');
 
-
 const rotas = express();
-
-rotas.get('/', (req,res)=>{
-    res.send('API RODANDO')
-})
 
 rotas.post("/cadastrar", validarDados, validarEmailExistente,cadastrarUsuario);
 rotas.post("/login", login);
