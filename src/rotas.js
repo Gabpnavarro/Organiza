@@ -9,7 +9,7 @@ const rotas = express();
 rotas.post("/cadastrar", validarDados, validarEmailExistente,cadastrarUsuario);
 rotas.post("/login", login);
 
-rotas.use(verificaLogin);
+// rotas.use(verificaLogin);
 
 rotas.post("/transacao", validarTransacao, cadastrarTransacao);
 rotas.get("/transacao", listarFinanceiro);
