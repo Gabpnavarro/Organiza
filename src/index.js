@@ -6,7 +6,12 @@ const PORT = process.env.PORT || 3000;
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = ['http://localhost:3000', 'https://defiant-seal-wetsuit.cyclic.app', 'https://gerenciamento-financas.cyclic.app' ];
+app.use(cors({
+  origin: allowedOrigins
+}));
+
+
 app.use(express.json());
 app.use(rotas);
 
