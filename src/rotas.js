@@ -7,6 +7,10 @@ const { cadastrarTransacao, listarFinanceiro } = require('./controladores/financ
 
 const rotas = express();
 
+rotas.get('/', (req,res)=>{
+    res.send('API RODANDO')
+})
+
 rotas.post("/cadastrar", validarDados, validarEmailExistente,cadastrarUsuario);
 rotas.post("/login", login);
 
