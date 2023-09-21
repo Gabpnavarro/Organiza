@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const knex = require("knex")
+const knex = require("../conexao");
 require('dotenv').config();
 
 const cadastrarUsuario = async (req, res) => {
@@ -23,6 +23,7 @@ const cadastrarUsuario = async (req, res) => {
     return res.status(500).json({ mensagem: "Erro interno do servidor" });
   }
 }
+
 const login = async (req, res) => {
   const { email, senha } = req.body;
 

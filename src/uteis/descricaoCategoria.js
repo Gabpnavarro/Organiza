@@ -1,4 +1,4 @@
-const knex = require('knex');
+const knex = require("../conexao");
 
 const descricaoCategoria = async (req, res, transacao) => {
   try {

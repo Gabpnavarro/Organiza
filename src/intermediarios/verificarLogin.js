@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const knex = require('knex'); 
+const knex = require("../conexao");
 require('dotenv').config();
 
 const verificaLogin = async (req, res, next) => {

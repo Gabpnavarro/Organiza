@@ -1,4 +1,4 @@
-const knex = require('knex'); 
+const knex = require("../conexao");
 
 const validarEmailExistente = async (req, res, next) => {
   try {

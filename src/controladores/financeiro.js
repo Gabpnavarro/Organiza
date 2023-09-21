@@ -1,4 +1,4 @@
-const knex = require('knex'); 
+const knex = require("../conexao");
 const { dataTratada } = require("../uteis/data");
 const { descricaoCategoria } = require("../uteis/descricaoCategoria");
 const filtro = require("../uteis/filtroData");
