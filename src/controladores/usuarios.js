@@ -1,45 +1,44 @@
 const bcrypt = require("bcrypt");
 const pool = require("../conexao");
 const jwt = require("jsonwebtoken");
+const knex = require("knex")
 require('dotenv').config();
 
-const cadastrarUsuario = async (req,res) => {
-    const {nome, email, senha} = req.body;
+const cadastrarUsuario = async (req, res) => {
+  const { nome, email, senha } = req.body;
 
-    try {
-        const senhaCripto = await bcrypt.hash(senha, 10);
-    
-        const query = `
-         insert into usuarios
-         (nome, email, senha)
-         values
-         ($1, $2, $3) returning *`;
-    
-        const { rows } = await pool.query(query, [nome, email, senhaCripto]);
-        const { senha: _, ...usuario } = rows[0];
-    
-        return res.status(201).json(usuario);
-      } catch (error) {
-        return res.status(500).json({ mensagem: "Erro interno do servidor" });
-      }
+  try {
+    const novoUsuario = {
+      nome,
+      email,
+      senha: await bcrypt.hash(senha, 10)
+    };
+
+    const [usuarioInserido] = await knex('usuarios')
+      .insert(novoUsuario)
+      .returning(['id', 'nome', 'email']); 
+
+    return res.status(201).json(usuarioInserido);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ mensagem: "Erro interno do servidor" });
+  }
 }
-
 const login = async (req, res) => {
   const { email, senha } = req.body;
 
   try {
-    const { rows, rowCount } = await pool.query(
-      "select * from usuarios where email = $1",
-      [email]
-    );
+    const [usuarioEncontrado] = await knex('usuarios')
+      .where({ email })
+      .select('*');
 
-    if (rowCount === 0) {
+    if (!usuarioEncontrado) {
       return res
         .status(401)
         .json({ mensagem: "Usuário e/ou senha inválido(s)." });
     }
 
-    const { senha: senhaUsuario, ...usuario } = rows[0];
+    const { senha: senhaUsuario, ...usuario } = usuarioEncontrado;
 
     const senhaValida = await bcrypt.compare(senha, senhaUsuario);
 
@@ -56,6 +55,7 @@ const login = async (req, res) => {
       token,
     });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ mensagem: "Erro interno do servidor" });
   }
 };
