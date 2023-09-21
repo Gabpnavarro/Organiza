@@ -23,9 +23,9 @@ const validarEmailExistente = async (req, res, next) => {
 
 const validarDados = async (req, res, next) => {
   try {
-    const { nome, email, senha } = req.body;
+    const { nome_completo, nome_social, email, senha } = req.body;
 
-    if (!nome || !email || !senha) {
+    if (!nome_completo || !nome_social || !email || !senha) {
       return res
         .status(400)
         .json({ mensagem: "Por favor preencha os campos obrigatórios" });
