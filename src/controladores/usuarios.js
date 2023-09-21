@@ -4,18 +4,19 @@ const knex = require("../conexao");
 require('dotenv').config();
 
 const cadastrarUsuario = async (req, res) => {
-  const { nome, email, senha } = req.body;
+  const { nome_completo, nome_social , email, senha } = req.body;
 
   try {
     const novoUsuario = {
-      nome,
+      nome_completo, 
+      nome_social,
       email,
       senha: await bcrypt.hash(senha, 10)
     };
 
     const [usuarioInserido] = await knex('usuarios')
       .insert(novoUsuario)
-      .returning(['id', 'nome', 'email']); 
+      .returning(['id', 'nome_completo', 'nome_social', 'email']); 
 
     return res.status(201).json(usuarioInserido);
   } catch (error) {

@@ -16,7 +16,8 @@ create table sub_categorias (
 
 create table usuarios (
     id serial primary key,
-    nome text,
+    nome_completo text,
+  	nome_social text,
     email text unique,
     senha text not null
 );
