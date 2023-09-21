@@ -1,22 +1,23 @@
-const pool = require("../conexao");
+const knex = require('knex');
 
 const descricaoCategoria = async (req, res, transacao) => {
   try {
-    const queryCategoriaNome = "select descricao from categorias where id = $1";
+    const queryCategoriaNome = "select descricao from categorias where id = :categoria_id";
 
     if (!transacao) {
       const { categoria_id } = req.body;
 
-      const { rows } = await pool.query(queryCategoriaNome, [categoria_id]);
+      const [categoria] = await knex.raw(queryCategoriaNome, { categoria_id });
 
-      return rows[0].descricao;
+      return categoria[0].descricao;
     } else {
-      const { rows } = await pool.query(queryCategoriaNome, [transacao.categoria_id]);
+      const [categoria] = await knex.raw(queryCategoriaNome, { categoria_id: transacao.categoria_id });
 
-      return rows[0].descricao;
+      return categoria[0].descricao;
     }
   } catch (error) {
-    res.status(500).json({ mensagem: "Erro interno no servidor aqui" });
+    console.error(error);
+    res.status(500).json({ mensagem: "Erro interno no servidor" });
   }
 };
 

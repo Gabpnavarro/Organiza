@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const pool = require("../conexao");
+const knex = require('knex'); 
 require('dotenv').config();
 
 const verificaLogin = async (req, res, next) => {
@@ -14,16 +14,15 @@ const verificaLogin = async (req, res, next) => {
   try {
     const { id } = jwt.verify(token, process.env.JWT_PASS);
 
-    const { rows, rowCount } = await pool.query(
-      "select * from usuarios where id = $1",
-      [id]
-    );
+    const usuarioEncontrado = await knex('usuarios')
+      .where({ id })
+      .first(); 
 
-    if (rowCount === 0) {
+    if (!usuarioEncontrado) {
       return res.status(401).json({ mensagem: "Não autorizado" });
     }
 
-    const { senha, ...usuario } = rows[0];
+    const { senha, ...usuario } = usuarioEncontrado;
 
     req.usuario = usuario;
 

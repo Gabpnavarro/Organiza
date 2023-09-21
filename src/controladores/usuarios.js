@@ -1,5 +1,4 @@
 const bcrypt = require("bcrypt");
-const pool = require("../conexao");
 const jwt = require("jsonwebtoken");
 const knex = require("knex")
 require('dotenv').config();
