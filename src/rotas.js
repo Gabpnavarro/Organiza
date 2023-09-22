@@ -9,9 +9,9 @@ const rotas = express();
 rotas.post("/cadastrar", validarDados, validarEmailExistente,cadastrarUsuario);
 rotas.post("/login", login);
 
-rotas.use(verificaLogin);
+rotas.get('/listagemParametrosTabela', listagemParametrosTabela);
 
-rotas.get('/listagemParametrosTabela', listagemParametrosTabela)
+rotas.use(verificaLogin);
 
 // rotas.get('/')
 
