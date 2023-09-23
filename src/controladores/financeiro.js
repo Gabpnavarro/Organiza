@@ -4,19 +4,19 @@ const { dataTratada } = require("../uteis/data");
 const listagemParametrosTabela = async (req, res) => {
   try {
 
-  
+    const tipos = await knex("categorias");
+
     const tipoEsubtipos = await knex("sub_categorias")
     .join("categorias", "categorias.id", "sub_categorias.categoria_id")
     .select(        "sub_categorias.id",
     "sub_categorias.descricao as subtipo",
     "categorias.descricao as tipo");
 
-
-    const tipoEsubtiposOrdenados = tipoEsubtipos.sort((a, b) =>
+    const subtipos = tipoEsubtipos.sort((a, b) =>
       a.subtipo.localeCompare(b.subtipo)
     );
 
-    res.status(200).json({tiposESubtipos: tipoEsubtiposOrdenados});
+    res.status(200).json({tipos, subtipos});
   } catch (error) {
     res.status(500).json({ mensagem: "Erro no servidor." });
   }
