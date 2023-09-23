@@ -54,14 +54,27 @@ const cadastroFinanceiro = async (req, res) => {
       financeiro.tipo = categorias.categoria;
       financeiro.subtipo = sub_categorias.sub_categoria;
   
-  res.status(201).json(financeiro);
+  res.status(201).json({"mensagem": "Cadastro financeiro feito com sucesso."});
   
   } catch (error) {
     res.status(500).json({ mensagem: "Erro no servidor" });
   }
 };
 
+const listaFinancas = async(req,res) => {
+
+  try {
+    const lista = await knex('financeiro').where("usuario_id",req.usuario.id);
+
+    res.status(200).json(lista)
+    
+  } catch (error) {
+    res.status(500).json({"mensagem": "Erro de servidor."})
+  }
+}
+
 module.exports = {
   listagemParametrosTabela,
   cadastroFinanceiro,
+  listaFinancas,
 };
