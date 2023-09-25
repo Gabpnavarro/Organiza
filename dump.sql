@@ -27,7 +27,7 @@ create table financeiro (
     descricao text,
     valor integer,
     data date,
-    categoria_id integer references categorias(id),
+    sub_categoria_id integer references sub_categorias(id),
     usuario_id integer references usuarios(id)
 );
   
