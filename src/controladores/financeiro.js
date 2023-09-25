@@ -27,7 +27,7 @@ const listagemParametrosTabela = async (req, res) => {
 };
 
 const cadastroFinanceiro = async (req, res) => {
-  const { data, descricao, tipo, subtipo, valor } = req.body;
+  const { data, descricao, subtipo, valor } = req.body;
 
   const cadastroFinanceiro = {
     data,
@@ -51,16 +51,16 @@ const cadastroFinanceiro = async (req, res) => {
     const sub_categorias = await knex("financeiro")
       .join(
         "sub_categorias",
-        "financeiro.categoria_id",
-        "sub_categorias.categoria_id"
+        "financeiro.sub_categoria_id",
+        "sub_categorias.id"
       )
       .where("sub_categorias.id", subtipo)
-      .select("sub_categorias.descricao as sub_categoria")
+      .select("sub_categorias.descricao as subtipo")
       .first();
 
-    // financeiro.data = dataTratada(data);
-    // financeiro.tipo = categorias;
-    // financeiro.subtipo = sub_categorias;
+    financeiro.data = dataTratada(data);
+    financeiro.tipo = categorias.tipo;
+    financeiro.subtipo = sub_categorias.subtipo;
 
     res
       .status(201).json(financeiro);
@@ -76,7 +76,12 @@ const listaFinancas = async (req, res) => {
       .join("sub_categorias", "financeiro.sub_categoria_id", "sub_categorias.id")
       .join("categorias", "sub_categorias.categoria_id", "categorias.id")
       .where("usuario_id", req.usuario.id)
-      .select( "financeiro.id", "financeiro.data", "financeiro.descricao", "categorias.descricao as tipo", "sub_categorias.descricao as subtipo", "financeiro.valor", );
+      .select( "financeiro.id", "financeiro.data", "financeiro.descricao", "categorias.descricao as tipo", "sub_categorias.descricao as subtipo", "financeiro.valor", )
+      .orderBy("financeiro.id", "desc");
+      
+      lista.forEach(item => {
+        item.data = dataTratada(item.data);
+      });
 
     res.status(200).json(lista);
   } catch (error) {
