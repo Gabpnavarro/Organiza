@@ -20,7 +20,7 @@ const listagemParametrosTabela = async (req, res) => {
       a.subtipo.localeCompare(b.subtipo)
     );
 
-    res.status(200).json({ tipos, subtipos });
+    res.status(200).json({ tipo:tipos, subtipo: subtipos });
   } catch (error) {
     res.status(500).json({ mensagem: "Erro no servidor." });
   }
@@ -78,7 +78,7 @@ const listaFinancas = async (req, res) => {
       .where("usuario_id", req.usuario.id)
       .select( "financeiro.id", "financeiro.data", "financeiro.descricao", "categorias.descricao as tipo", "sub_categorias.descricao as subtipo", "financeiro.valor", )
       .orderBy("financeiro.id", "desc");
-      
+
       lista.forEach(item => {
         item.data = dataTratada(item.data);
       });
