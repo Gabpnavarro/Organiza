@@ -105,7 +105,7 @@ const listaFinancas = async (req, res) => {
 
 const atualizarFinancia = async (req, res) => {
   const { usuario } = req;
-  const { id, data, descricao, tipo, subtipo, valor } = req.body;
+  const { id, data, descricao, subtipo, valor } = req.body;
 
   if (!id) {
     return res
@@ -113,14 +113,14 @@ const atualizarFinancia = async (req, res) => {
       .json({ mensagem: "Identifique qual financia deve ser atualizada." });
   }
 
-  if (!data && !descricao && !tipo && !subtipo && !valor) {
+  if (!data && !descricao && !subtipo && !valor) {
     return res.status(400).json({
       mensagem: "Informe ao menos um campo para atualização do produto.",
     });
   }
 
   try {
-    const financiaEncontrada = await knex("financiero")
+    const financiaEncontrada = await knex("financeiro")
       .where({
         id,
         usuario_id: usuario.id,
@@ -130,7 +130,83 @@ const atualizarFinancia = async (req, res) => {
     if (!financiaEncontrada) {
       return res.status(404).json("Financia não encontrado");
     }
-  } catch (error) {}
+
+    const [idSubtipo] = await knex("sub_categorias")
+      .where("sub_categorias.descricao", subtipo)
+      .select("sub_categorias.id");
+
+    if (!idSubtipo) {
+      return res.status(400).json({ mensagem: "O subtipo não é existente." });
+    }
+
+    const body = {};
+
+    if (data) {
+      body.data = data;
+    }
+
+    if (descricao) {
+      body.descricao = descricao;
+    }
+
+    if (subtipo) {
+      body.sub_categoria_id = idSubtipo.id;
+    }
+
+    if (valor) {
+      body.valor = valor;
+    }
+
+    const atualizaDado = await knex("financeiro")
+      .where({
+        id,
+        usuario_id: usuario.id,
+      })
+      .update(body);
+
+    if (!atualizaDado) {
+      return res
+        .status(500)
+        .json({ mensagem: "A financia não foi atualizada" });
+    }
+
+    return res.status(200).json({ mensagem: "Financia atualizada" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ mensagem: "Erro interno no servidor" });
+  }
+};
+
+const excluirFinancia = async (req, res) => {
+  const { usuario } = req;
+  const {id} = req.body;
+
+  try {
+    const financiaEncontrada = await knex("financeiro")
+      .where({ id, usuario_id: usuario.id })
+      .first();
+
+    if (!financiaEncontrada) {
+      return res.status(404).json({ mensagem: "Financia não encontrada" });
+    }
+
+    const financiaExcluido = await knex("financeiro")
+      .where({
+        id,
+        usuario_id: usuario.id,
+      })
+      .del();
+
+    if (!financiaExcluido) {
+      return res.status(400).json({ mensagem: "A financia não foi excluida" });
+    }
+
+    return res
+      .status(200)
+      .json({ mensagem: "Exclusão da financia feito com sucesso" });
+  } catch (error) {
+    return res.status(400).json(error.message);
+  }
 };
 
 module.exports = {
@@ -138,4 +214,5 @@ module.exports = {
   cadastroFinanceiro,
   listaFinancas,
   atualizarFinancia,
+  excluirFinancia,
 };

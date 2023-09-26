@@ -1,6 +1,6 @@
 const joi = require('joi')
 
-const schemaUsuario = joi.object({
+const schemaCadastroFinanceiro = joi.object({
 	data: joi.date().iso().required().messages({
 		'any.required': 'O campo data é obrigatório',
 		'string.empty': 'O campo data é obrigatório',
@@ -11,6 +11,8 @@ const schemaUsuario = joi.object({
 		'any.required': 'O campo descricao é obrigatório',
 		'string.empty': 'O campo descricao é obrigatório',
 	}),
+
+	tipo: joi.string(),
 
 	subtipo: joi.string().required().messages({
 		'any.required': 'O campo subtipo é obrigatório',
@@ -25,4 +27,4 @@ const schemaUsuario = joi.object({
 	}),
 })
 
-module.exports = schemaUsuario
+module.exports = schemaCadastroFinanceiro
