@@ -64,8 +64,10 @@ const cadastroFinanceiro = async (req, res) => {
 
     res
       .status(201).json(financeiro);
-      // .json({ mensagem: "Cadastro financeiro feito com sucesso." });
+
   } catch (error) {
+
+    console.error(error);
     res.status(500).json({ mensagem: "Erro no servidor" });
   }
 };
@@ -86,7 +88,7 @@ const listaFinancas = async (req, res) => {
     res.status(200).json(lista);
   } catch (error) {
     res.status(500).json({ mensagem: "Erro de servidor." });
-  }
+  } 
 };
 
 module.exports = {
