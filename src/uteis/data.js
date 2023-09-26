@@ -2,7 +2,7 @@ const moment = require('moment');
 
 const dataTratada = (data) => {
 
-    const date = moment(data, "MM/DD/YYYY").format("DD/MM/YYYY");
+    const date = moment(data, "YYYY-MM-DD").format("DD/MM/YYYY");
     
     return date;
 }

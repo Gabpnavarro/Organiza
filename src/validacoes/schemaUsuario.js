@@ -1,10 +1,10 @@
 const joi = require('joi')
 
 const schemaUsuario = joi.object({
-	data: joi.date().required().messages({
+	data: joi.date().iso().required().messages({
 		'any.required': 'O campo data é obrigatório',
 		'string.empty': 'O campo data é obrigatório',
-        'date.base': 'O formato da data está errado deve ser MM/DD/YYYY ou MM-DD-YYYY'
+		'date.format': 'O formato da data deve ser YYYY-MM-DD'
 	}),
 
 	descricao: joi.string().required().messages({
@@ -12,10 +12,10 @@ const schemaUsuario = joi.object({
 		'string.empty': 'O campo descricao é obrigatório',
 	}),
 
-	subtipo: joi.number().required().messages({
+	subtipo: joi.string().required().messages({
 		'any.required': 'O campo subtipo é obrigatório',
 		'string.empty': 'O campo subtipo é obrigatório',
-        'number.base': 'O campo subtipo precisa ser um número',
+        'string.base': 'O campo subtipo precisa ser escrito no formato de um nome',
 	}),
 
 	valor: joi.number().positive().required().messages({

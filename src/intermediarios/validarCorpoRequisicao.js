@@ -7,5 +7,5 @@ const validarCorpoRequisicao = joiSchema => async (req, res, next) => {
 		return res.status(400).json({ mensagem: error.message })
 	}
 }
-
+;
 module.exports = validarCorpoRequisicao
