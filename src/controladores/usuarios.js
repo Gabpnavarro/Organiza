@@ -14,11 +14,9 @@ const cadastrarUsuario = async (req, res) => {
       senha: await bcrypt.hash(senha, 10)
     };
 
-    const [usuarioInserido] = await knex('usuarios')
-      .insert(novoUsuario)
-      .returning(['id', 'nome_completo', 'nome_social', 'email']); 
+    await knex('usuarios').insert(novoUsuario); 
 
-    return res.status(201).json(usuarioInserido);
+    return res.status(201).json({"mensagem": "Usuario cadastrado com sucesso"});
   } catch (error) {
     console.error(error);
     return res.status(500).json({ mensagem: "Erro interno do servidor" });
@@ -51,7 +49,7 @@ const login = async (req, res) => {
     
     const token = jwt.sign({ id: usuario.id }, process.env.JWT_PASS);
 
-    return res.json({
+    return res.status(200).json({
       usuario,
       token,
     });

@@ -74,30 +74,61 @@ const cadastroFinanceiro = async (req, res) => {
 };
 
 const listaFinancas = async (req, res) => {
+  const { dataInicial, dataFinal } = req.body;
+  const dataInicialPresente = req.body.hasOwnProperty("dataInicial");
+  const dataFinalPresente = req.body.hasOwnProperty("dataFinal");
+
   try {
+    if (dataInicial <= dataFinal && dataInicialPresente && dataFinalPresente) {
+      const lista = await knex("financeiro")
+        .join(
+          "sub_categorias",
+          "financeiro.sub_categoria_id",
+          "sub_categorias.id"
+        )
+        .join("categorias", "sub_categorias.categoria_id", "categorias.id")
+        .where("usuario_id", req.usuario.id)
+        .whereBetween("financeiro.data", [dataInicial, dataFinal])
+        .select(
+          "financeiro.id",
+          "financeiro.data",
+          "financeiro.descricao",
+          "categorias.descricao as tipo",
+          "sub_categorias.descricao as subtipo",
+          "financeiro.valor"
+        )
+        .orderBy("financeiro.id", "desc");
+
+      lista.forEach((item) => {
+        item.data = dataTratada(item.data);
+      });
+
+      return res.status(200).json(lista);
+    }
+
     const lista = await knex("financeiro")
-      .join(
-        "sub_categorias",
-        "financeiro.sub_categoria_id",
-        "sub_categorias.id"
-      )
-      .join("categorias", "sub_categorias.categoria_id", "categorias.id")
-      .where("usuario_id", req.usuario.id)
-      .select(
-        "financeiro.id",
-        "financeiro.data",
-        "financeiro.descricao",
-        "categorias.descricao as tipo",
-        "sub_categorias.descricao as subtipo",
-        "financeiro.valor"
-      )
-      .orderBy("financeiro.id", "desc");
+    .join(
+      "sub_categorias",
+      "financeiro.sub_categoria_id",
+      "sub_categorias.id"
+    )
+    .join("categorias", "sub_categorias.categoria_id", "categorias.id")
+    .where("usuario_id", req.usuario.id)
+    .select(
+      "financeiro.id",
+      "financeiro.data",
+      "financeiro.descricao",
+      "categorias.descricao as tipo",
+      "sub_categorias.descricao as subtipo",
+      "financeiro.valor"
+    )
+    .orderBy("financeiro.id", "desc");
 
-    lista.forEach((item) => {
-      item.data = dataTratada(item.data);
-    });
+  lista.forEach((item) => {
+    item.data = dataTratada(item.data);
+  });
 
-    res.status(200).json(lista);
+  return res.status(200).json(lista);
   } catch (error) {
     res.status(500).json({ mensagem: "Erro de servidor." });
   }
@@ -179,7 +210,7 @@ const atualizarFinancia = async (req, res) => {
 
 const excluirFinancia = async (req, res) => {
   const { usuario } = req;
-  const {id} = req.body;
+  const { id } = req.body;
 
   try {
     const financiaEncontrada = await knex("financeiro")

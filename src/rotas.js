@@ -10,7 +10,7 @@ const schemaExcluirFinanceiro = require('./validacoes/schemaExcluirFinanceiro');
 
 const rotas = express();
 
-rotas.post("/cadastrar", validarDados, validarEmailExistente,cadastrarUsuario);
+rotas.post("/cadastrar", validarDados, validarEmailExistente, cadastrarUsuario);
 rotas.post("/login", login);
 
 rotas.get('/listagemparametrostabela', listagemParametrosTabela);
