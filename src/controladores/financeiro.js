@@ -74,9 +74,12 @@ const cadastroFinanceiro = async (req, res) => {
 };
 
 const listaFinancas = async (req, res) => {
-  const { dataInicial, dataFinal } = req.body;
+  const { dataInicial, dataFinal, mes, ano } = req.body;
+console.log(ano,mes)
   const dataInicialPresente = req.body.hasOwnProperty("dataInicial");
   const dataFinalPresente = req.body.hasOwnProperty("dataFinal");
+  const mesPresente = req.body.hasOwnProperty("mes");
+  const anoPresente = req.body.hasOwnProperty("ano");
 
   try {
     if (dataInicial <= dataFinal && dataInicialPresente && dataFinalPresente) {
@@ -106,29 +109,42 @@ const listaFinancas = async (req, res) => {
       return res.status(200).json(lista);
     }
 
+    if (mesPresente && anoPresente) {
+      const lista = await knex("financeiro")
+        .where("usuario_id", req.usuario.id)
+        .where(knex.raw("EXTRACT(MONTH FROM financeiro.data) = ?", [mes]))
+        .where(knex.raw("EXTRACT(YEAR FROM financeiro.data) = ?", [ano]));
+
+      lista.forEach((item) => {
+        item.data = dataTratada(item.data);
+      });
+
+      return res.status(200).json(lista);
+    }
+
     const lista = await knex("financeiro")
-    .join(
-      "sub_categorias",
-      "financeiro.sub_categoria_id",
-      "sub_categorias.id"
-    )
-    .join("categorias", "sub_categorias.categoria_id", "categorias.id")
-    .where("usuario_id", req.usuario.id)
-    .select(
-      "financeiro.id",
-      "financeiro.data",
-      "financeiro.descricao",
-      "categorias.descricao as tipo",
-      "sub_categorias.descricao as subtipo",
-      "financeiro.valor"
-    )
-    .orderBy("financeiro.id", "desc");
+      .join(
+        "sub_categorias",
+        "financeiro.sub_categoria_id",
+        "sub_categorias.id"
+      )
+      .join("categorias", "sub_categorias.categoria_id", "categorias.id")
+      .where("usuario_id", req.usuario.id)
+      .select(
+        "financeiro.id",
+        "financeiro.data",
+        "financeiro.descricao",
+        "categorias.descricao as tipo",
+        "sub_categorias.descricao as subtipo",
+        "financeiro.valor"
+      )
+      .orderBy("financeiro.id", "desc");
 
-  lista.forEach((item) => {
-    item.data = dataTratada(item.data);
-  });
+    lista.forEach((item) => {
+      item.data = dataTratada(item.data);
+    });
 
-  return res.status(200).json(lista);
+    return res.status(200).json(lista);
   } catch (error) {
     res.status(500).json({ mensagem: "Erro de servidor." });
   }
@@ -234,7 +250,7 @@ const excluirFinancia = async (req, res) => {
 
     return res
       .status(200)
-      .json({ mensagem: "Exclusão da financia feito com sucesso" });
+      .json({ mensagem: "Exclusão da financia feita com sucesso" });
   } catch (error) {
     return res.status(400).json(error.message);
   }
