@@ -75,7 +75,7 @@ const cadastroFinanceiro = async (req, res) => {
 
 const listaFinancas = async (req, res) => {
   const { dataInicial, dataFinal, mes, ano } = req.body;
-console.log(ano,mes)
+
   const dataInicialPresente = req.body.hasOwnProperty("dataInicial");
   const dataFinalPresente = req.body.hasOwnProperty("dataFinal");
   const mesPresente = req.body.hasOwnProperty("mes");
@@ -111,13 +111,23 @@ console.log(ano,mes)
 
     if (mesPresente && anoPresente) {
       const lista = await knex("financeiro")
+      .join(
+        "sub_categorias",
+        "financeiro.sub_categoria_id",
+        "sub_categorias.id"
+      )
+      .join("categorias", "sub_categorias.categoria_id", "categorias.id")
         .where("usuario_id", req.usuario.id)
         .where(knex.raw("EXTRACT(MONTH FROM financeiro.data) = ?", [mes]))
-        .where(knex.raw("EXTRACT(YEAR FROM financeiro.data) = ?", [ano]));
-
-      lista.forEach((item) => {
-        item.data = dataTratada(item.data);
-      });
+        .where(knex.raw("EXTRACT(YEAR FROM financeiro.data) = ?", [ano]))
+        .select(
+          "financeiro.id",
+          "financeiro.data",
+          "financeiro.descricao",
+          "categorias.descricao as tipo",
+          "sub_categorias.descricao as subtipo",
+          "financeiro.valor"
+        );
 
       return res.status(200).json(lista);
     }
