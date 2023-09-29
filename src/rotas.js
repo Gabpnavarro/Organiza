@@ -18,7 +18,7 @@ rotas.get('/listagemparametrostabela', listagemParametrosTabela);
 
 rotas.use(verificaLogin);
 
-rotas.get('/listafinancas',validarCorpoRequisicao(schemaListaFinanceira), listaFinancas);
+rotas.post('/listafinancas',validarCorpoRequisicao(schemaListaFinanceira), listaFinancas);
 rotas.post('/cadastrofinanceiro', validarCorpoRequisicao(schemaCadastroFinanceiro), cadastroFinanceiro);
 rotas.put('/atualizarfinanceiro', validarCorpoRequisicao(schemaAtualizarFinanceiro), atualizarFinancia);
 rotas.delete('/excluirfinanceiro', validarCorpoRequisicao(schemaExcluirFinanceiro), excluirFinancia);
